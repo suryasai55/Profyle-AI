@@ -1,0 +1,36 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.env
+.venv
+
+# Database
+*.db
+*.sqlite3
+
+# Uploads and logs
+uploads/
+app.log
+nltk_data/
+
+# IDE files
+.vscode/
+.idea/
+.project
+.pydevproject
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Temporary scratchpad scripts
+scratch/

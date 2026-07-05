@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Upload Resume | PlacementReady AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card card-premium p-5 border-0 shadow-lg text-center">
+                <h2 class="fw-bold mb-2">Analyze Your Resume</h2>
+                <p class="text-muted mb-5">Upload your PDF resume to parse technical skills, scan gaps, and compute your baseline score.</p>
+                
+                <form action="{{ url_for('resume.upload') }}" method="POST" enctype="multipart/form-data">
+                    <div class="border border-2 border-dashed border-primary rounded-lg p-5 mb-4 bg-light position-relative" style="border-style: dashed !important; border-radius: var(--border-radius-lg)">
+                        <i class="fa-solid fa-cloud-arrow-up text-primary mb-3" style="font-size: 3rem;"></i>
+                        <h5>Drag & drop your resume file here</h5>
+                        <p class="text-muted small">Only PDF files are supported. Max size 16MB.</p>
+                        <input type="file" name="resume" class="form-control mt-4 form-control-premium w-50 mx-auto" accept=".pdf" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-premium btn-lg px-5">
+                        <i class="fa-solid fa-microscope me-2"></i> Start NLP Parsing
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

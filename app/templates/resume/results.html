@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %}Resume Analysis Results | PlacementReady AI{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4 py-3">
+    <div class="col-lg-8">
+        <h1 class="fw-extrabold text-dark tracking-tight mb-2">Resume Parsing Results</h1>
+        <p class="text-muted fs-5 mb-0">NLP analysis results for <strong>{{ resume.filename }}</strong>. Mapped at {{ resume.uploaded_at.strftime('%Y-%m-%d %H:%M') }} UTC.</p>
+    </div>
+    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+        <a href="{{ url_for('dashboard.index') }}" class="btn btn-premium-outline">
+            <i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Left Panel: Score and Chart -->
+    <div class="col-lg-4">
+        <div class="card card-premium p-4 text-center h-100">
+            <h5 class="fw-bold mb-4 text-muted uppercase">Resume Match Rating</h5>
+            
+            <!-- Circular score ring -->
+            <div class="my-4 position-relative d-inline-block mx-auto" style="width: 180px; height: 180px;">
+                <div class="border border-5 rounded-circle d-flex align-items-center justify-content-center bg-white shadow-sm" 
+                     style="width: 180px; height: 180px; 
+                            border-color: {% if resume.score >= 80 %}#10b981{% elif resume.score >= 50 %}#f59e0b{% else %}#ef4444{% endif %} !important;">
+                    <div>
+                        <h1 class="fw-extrabold mb-0" 
+                            style="font-size: 3.2rem; color: {% if resume.score >= 80 %}#10b981{% elif resume.score >= 50 %}#f59e0b{% else %}#ef4444{% endif %};">
+                            {{ resume.score | int }}%
+                        </h1>
+                        <p class="text-muted small mb-0">Weighted Score</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <span class="badge {% if resume.score >= 80 %}bg-success-subtle text-success{% elif resume.score >= 50 %}bg-warning-subtle text-warning{% else %}bg-danger-subtle text-danger{% endif %} badge-custom px-3 py-2 mb-3">
+                    {% if resume.score >= 80 %}Strong Profile{% elif resume.score >= 50 %}Moderate Profile{% else %}Needs Enhancements{% endif %}
+                </span>
+                <p class="text-muted small mb-0">This rating is calculated by scanning the resume for core backend stacks, tools, and domain expertise.</p>
+            </div>
+            
+            <!-- Chart container -->
+            <div class="mt-5">
+                <canvas id="skillsChart" width="100" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right Panel: Skills List -->
+    <div class="col-lg-8">
+        <div class="card card-premium p-4 h-100">
+            <h5 class="fw-bold mb-4"><i class="fa-solid fa-list-check text-primary me-2"></i> Technical Stack Scanning</h5>
+            
+            <!-- Detected Skills -->
+            <div class="mb-5">
+                <h6 class="fw-bold text-success mb-3">
+                    <i class="fa-solid fa-circle-check me-2"></i> Detected Skills ({{ detected_skills | length }})
+                </h6>
+                {% if detected_skills %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for skill in detected_skills %}
+                            <span class="badge bg-success-subtle text-success badge-custom py-2 px-3 fs-7">
+                                <i class="fa-solid fa-check me-1"></i> {{ skill }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-light border small text-muted">
+                        No target programming skills detected in this resume. Try updating your formatting or adding technical keywords.
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Missing Skills -->
+            <div class="mb-5">
+                <h6 class="fw-bold text-danger mb-3">
+                    <i class="fa-solid fa-circle-exclamation me-2"></i> Missing Skills ({{ missing_skills | length }})
+                </h6>
+                {% if missing_skills %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for skill in missing_skills %}
+                            <span class="badge bg-danger-subtle text-danger badge-custom py-2 px-3 fs-7">
+                                <i class="fa-solid fa-xmark me-1"></i> {{ skill }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-success py-2 px-3 border-0 small text-success">
+                        <i class="fa-solid fa-star me-1"></i> Exceptional! You have all the core skills mapped in our parser dictionary.
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Skill Gap Call to Action -->
+            <div class="mt-auto border-top pt-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h6 class="fw-bold mb-1">Check Role Readiness Gaps</h6>
+                        <p class="text-muted small mb-0">Compare these results against engineering roles like ML Engineer or Backend Developer to receive targeted course plans.</p>
+                    </div>
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                        <a href="{{ url_for('skill_gap.analysis') }}" class="btn btn-premium">
+                            Skill Gap Detector <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctx = document.getElementById('skillsChart').getContext('2d');
+        const detectedCount = {{ detected_skills | length }};
+        const missingCount = {{ missing_skills | length }};
+        
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Detected Skills', 'Missing Skills'],
+                datasets: [{
+                    data: [detectedCount, missingCount],
+                    backgroundColor: ['#10b981', '#cbd5e1'],
+                    borderWidth: 2,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                family: 'Inter',
+                                size: 11
+                            }
+                        }
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+    });
+</script>
+{% endblock %}

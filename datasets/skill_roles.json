@@ -1,0 +1,122 @@
+{
+  "roles": {
+    "python_dev": {
+      "name": "Python Developer",
+      "required_skills": ["Python", "SQL", "Git", "Flask", "HTML", "CSS", "JavaScript"]
+    },
+    "data_analyst": {
+      "name": "Data Analyst",
+      "required_skills": ["SQL", "Python", "Data Science", "Git", "AWS"]
+    },
+    "ml_engineer": {
+      "name": "ML Engineer",
+      "required_skills": ["Python", "Machine Learning", "Data Science", "NLP", "SQL", "Docker", "Git"]
+    },
+    "devops": {
+      "name": "DevOps Engineer",
+      "required_skills": ["Docker", "Jenkins", "Git", "AWS", "SQL", "Python"]
+    },
+    "backend_dev": {
+      "name": "Backend Developer",
+      "required_skills": ["Python", "Java", "C++", "SQL", "Flask", "Git", "Docker", "AWS"]
+    }
+  },
+  "course_recommendations": {
+    "Python": {
+      "title": "Python for Everybody Specialization",
+      "platform": "Coursera",
+      "priority": "High",
+      "link": "https://www.coursera.org/specializations/python"
+    },
+    "Java": {
+      "title": "Java Programming and Software Engineering Fundamentals",
+      "platform": "Coursera",
+      "priority": "Medium",
+      "link": "https://www.coursera.org/specializations/java-programming"
+    },
+    "C++": {
+      "title": "Coding for Everyone: C and C++ Specialization",
+      "platform": "Coursera",
+      "priority": "Medium",
+      "link": "https://www.coursera.org/specializations/coding-for-everyone"
+    },
+    "JavaScript": {
+      "title": "The Complete JavaScript Course",
+      "platform": "Udemy",
+      "priority": "High",
+      "link": "https://www.udemy.com/course/the-complete-javascript-course/"
+    },
+    "SQL": {
+      "title": "SQL for Data Science",
+      "platform": "Coursera",
+      "priority": "High",
+      "link": "https://www.coursera.org/learn/sql-for-data-science"
+    },
+    "HTML": {
+      "title": "HTML and CSS Design and Build Websites",
+      "platform": "Udemy",
+      "priority": "Medium",
+      "link": "https://www.udemy.com/course/design-and-build-websites-with-html-css/"
+    },
+    "CSS": {
+      "title": "CSS - The Complete Guide",
+      "platform": "Udemy",
+      "priority": "Medium",
+      "link": "https://www.udemy.com/course/css-the-complete-guide-incl-flexbox-grid-sass/"
+    },
+    "React": {
+      "title": "React - The Complete Guide",
+      "platform": "Udemy",
+      "priority": "High",
+      "link": "https://www.udemy.com/course/react-the-complete-guide-incl-redux/"
+    },
+    "Flask": {
+      "title": "REST APIs with Flask and Python",
+      "platform": "Udemy",
+      "priority": "High",
+      "link": "https://www.udemy.com/course/rest-api-flask-and-python/"
+    },
+    "Git": {
+      "title": "Version Control with Git",
+      "platform": "Coursera",
+      "priority": "High",
+      "link": "https://www.coursera.org/learn/version-control-with-git"
+    },
+    "Docker": {
+      "title": "Docker and Kubernetes: The Complete Guide",
+      "platform": "Udemy",
+      "priority": "High",
+      "link": "https://www.udemy.com/course/docker-and-kubernetes-the-complete-guide/"
+    },
+    "Jenkins": {
+      "title": "Jenkins, From Zero To Hero",
+      "platform": "Udemy",
+      "priority": "High",
+      "link": "https://www.udemy.com/course/jenkins-from-zero-to-hero/"
+    },
+    "AWS": {
+      "title": "AWS Certified Solutions Architect Associate SAA-C03",
+      "platform": "Udemy",
+      "priority": "High",
+      "link": "https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/"
+    },
+    "Machine Learning": {
+      "title": "Machine Learning Specialization by Andrew Ng",
+      "platform": "Coursera",
+      "priority": "High",
+      "link": "https://www.coursera.org/specializations/machine-learning-introduction"
+    },
+    "NLP": {
+      "title": "Natural Language Processing Specialization",
+      "platform": "Coursera",
+      "priority": "Medium",
+      "link": "https://www.coursera.org/specializations/natural-language-processing"
+    },
+    "Data Science": {
+      "title": "IBM Data Science Professional Certificate",
+      "platform": "Coursera",
+      "priority": "High",
+      "link": "https://www.coursera.org/professional-certificates/ibm-data-science"
+    }
+  }
+}

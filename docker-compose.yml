@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai_career_assistant
+    ports:
+      - "5000:5000"
+    volumes:
+      # Mount SQLite db directory to persist account records on the host machine
+      - ./db:/app/db
+      # Mount uploads directory to persist PDF files locally
+      - ./uploads:/app/uploads
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=prod_aws_secret_key_change_in_env_file
+      - DATABASE_URL=sqlite:////app/db/career_assistant.db
+      - UPLOAD_FOLDER=/app/uploads
+      - NLTK_DATA_DIR=/app/nltk_data
+      - USE_S3=False # Set to True on EC2 deployment to trigger S3 uploads
+      # AWS credentials (can be omitted on EC2 if using IAM Instance Profiles)
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=us-east-1
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
+    restart: unless-stopped

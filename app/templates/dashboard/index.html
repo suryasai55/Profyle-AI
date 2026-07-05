@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | PlacementReady AI{% endblock %}
+
+{% block content %}
+<!-- Welcome Header -->
+<div class="row align-items-center mb-4 py-3">
+    <div class="col-lg-8">
+        {% if current_user.is_authenticated %}
+            <h1 class="fw-extrabold text-dark tracking-tight mb-1">Welcome back, {{ current_user.name }}!</h1>
+            <p class="text-muted fs-5 mb-0">Here is your current placement preparation roadmap and evaluation metrics.</p>
+        {% else %}
+            <h1 class="fw-extrabold text-dark tracking-tight mb-1">Welcome to PlacementReady AI</h1>
+            <p class="text-muted fs-5 mb-0">Evaluate your placement preparation, analyze your resume, and close skill gaps.</p>
+        {% endif %}
+    </div>
+    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+        <a href="{{ url_for('resume.upload') }}" class="btn btn-premium btn-lg shadow-sm">
+            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Upload Resume
+        </a>
+    </div>
+</div>
+
+<!-- Grid Cards Overview -->
+<div class="row g-4 mb-4">
+    <!-- Resume Card -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card card-premium h-100 p-4 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <span class="badge bg-primary-subtle text-primary badge-custom py-2 px-3 fs-7">NLP Analyzer</span>
+                    <i class="fa-solid fa-file-pdf text-primary fs-3"></i>
+                </div>
+                <h4 class="fw-bold mb-2">Resume Status</h4>
+                {% if metrics.has_resume %}
+                    <p class="text-dark small mb-1 fw-semibold text-truncate"><i class="fa-regular fa-file-code me-1 text-primary"></i> {{ metrics.resume_filename }}</p>
+                    <div class="d-flex gap-3 mt-3">
+                        <div>
+                            <span class="text-muted small d-block">Score</span>
+                            <span class="badge {% if metrics.resume_score >= 80 %}bg-success{% elif metrics.resume_score >= 50 %}bg-warning{% else %}bg-danger{% endif %} text-white">{{ metrics.resume_score }}/100</span>
+                        </div>
+                        <div>
+                            <span class="text-muted small d-block">Skills Found</span>
+                            <span class="fw-bold text-dark">{{ metrics.detected_skills_count }}</span>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-muted small mb-0">No resume analyzed yet. Upload your PDF resume to receive scoring and skills mapping.</p>
+                {% endif %}
+            </div>
+            <div class="mt-4 pt-3 border-top">
+                <a href="{{ url_for('resume.upload') }}" class="text-primary fw-semibold small text-decoration-none d-inline-flex align-items-center">
+                    {% if metrics.has_resume %}Re-analyze Resume{% else %}Analyze Resume{% endif %} <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Skill Gap Card -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card card-premium h-100 p-4 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <span class="badge bg-purple-subtle text-purple badge-custom py-2 px-3 fs-7" style="background-color: #f3e8ff; color: #7c3aed;">Role Comparison</span>
+                    <i class="fa-solid fa-arrows-split-up-and-left text-purple fs-3" style="color: #7c3aed;"></i>
+                </div>
+                <h4 class="fw-bold mb-2">Skill Gap Detector</h4>
+                {% if metrics.has_resume %}
+                    <p class="text-muted small mb-1">We compared your resume against standard roles.</p>
+                    <div class="d-flex gap-3 mt-3">
+                        <div>
+                            <span class="text-muted small d-block">Identified</span>
+                            <span class="text-success fw-bold">{{ metrics.detected_skills_count }}</span>
+                        </div>
+                        <div>
+                            <span class="text-muted small d-block">Gaps</span>
+                            <span class="text-danger fw-bold">{{ metrics.missing_skills_count }}</span>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-muted small mb-0">Select your target industry roles and compare your skills against standard industry requirements.</p>
+                {% endif %}
+            </div>
+            <div class="mt-4 pt-3 border-top">
+                <a href="{{ url_for('skill_gap.analysis') }}" class="text-purple fw-semibold small text-decoration-none d-inline-flex align-items-center" style="color: #7c3aed;">
+                    Check Gaps <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Readiness Score Card -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card card-premium h-100 p-4 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <span class="badge bg-success-subtle text-success badge-custom py-2 px-3 fs-7" style="background-color: #d1fae5; color: #069669;">Overall readiness</span>
+                    <i class="fa-solid fa-gauge-high text-success fs-3" style="color: #069669;"></i>
+                </div>
+                <h4 class="fw-bold mb-2">Placement Readiness</h4>
+                <div class="mt-2">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-muted small">Readiness Rating</span>
+                        <span class="fw-bold text-dark">{{ metrics.readiness_score }}%</span>
+                    </div>
+                    <div class="progress mb-2" style="height: 6px; border-radius: 3px;">
+                        <div class="progress-bar {% if metrics.readiness_score >= 80 %}bg-success{% elif metrics.readiness_score >= 50 %}bg-warning{% else %}bg-danger{% endif %}" role="progressbar" style="width: {{ metrics.readiness_score }}%;" aria-valuenow="{{ metrics.readiness_score }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <span class="badge {% if metrics.readiness_status == 'Ready' %}bg-success-subtle text-success{% elif metrics.readiness_status == 'Almost Ready' %}bg-warning-subtle text-warning{% else %}bg-danger-subtle text-danger{% endif %} badge-custom px-2.5 py-1" style="font-size: 11px;">
+                        {{ metrics.readiness_status }}
+                    </span>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-top">
+                <a href="{{ url_for('readiness.score') }}" class="text-success fw-semibold small text-decoration-none d-inline-flex align-items-center" style="color: #069669;">
+                    View Score <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interview Card -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card card-premium h-100 p-4 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <span class="badge bg-warning-subtle text-warning badge-custom py-2 px-3 fs-7" style="background-color: #fef3c7; color: #d97706;">Q&A Prep</span>
+                    <i class="fa-solid fa-comments text-warning fs-3" style="color: #d97706;"></i>
+                </div>
+                <h4 class="fw-bold mb-2">Interview Prep</h4>
+                <div class="d-flex gap-3 mt-3">
+                    <div>
+                        <span class="text-muted small d-block">Completed</span>
+                        <span class="fw-bold text-dark">{{ metrics.completed_questions }} Qs</span>
+                    </div>
+                    <div>
+                        <span class="text-muted small d-block">Bookmarks</span>
+                        <span class="fw-bold text-dark">{{ metrics.bookmarked_questions }} Qs</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-top">
+                <a href="{{ url_for('interview.prep') }}" class="text-warning fw-semibold small text-decoration-none d-inline-flex align-items-center" style="color: #d97706;">
+                    Practice Now <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+{% if current_user.is_authenticated and metrics.has_resume %}
+<div class="row g-4 mb-4">
+    <!-- Chart 1: Sub-scores -->
+    <div class="col-lg-6">
+        <div class="card card-premium p-4 h-100 border-0 shadow-sm">
+            <h5 class="fw-bold mb-4"><i class="fa-solid fa-chart-bar text-primary me-2"></i> Preparation Sub-scores</h5>
+            <div style="height: 250px; position: relative;">
+                <canvas id="scoresChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chart 2: Skills Ratio -->
+    <div class="col-lg-6">
+        <div class="card card-premium p-4 h-100 border-0 shadow-sm">
+            <h5 class="fw-bold mb-4"><i class="fa-solid fa-chart-pie text-primary me-2"></i> Resume Skills Ratio</h5>
+            <div style="height: 250px; position: relative;">
+                <canvas id="skillsRatioChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Recent Uploads Table -->
+{% if current_user.is_authenticated and metrics.recent_resumes %}
+<div class="card card-premium p-4 border-0 mb-5">
+    <h5 class="fw-bold mb-4"><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i> Recent Uploads</h5>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Filename</th>
+                    <th scope="col">Upload Date</th>
+                    <th scope="col">NLP Score</th>
+                    <th scope="col">Skills Count</th>
+                    <th scope="col">Storage location</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in metrics.recent_resumes %}
+                <tr>
+                    <td class="fw-semibold text-truncate" style="max-width: 250px;">
+                        <i class="fa-solid fa-file-pdf text-danger me-2"></i> {{ res.filename }}
+                    </td>
+                    <td class="text-muted small">{{ res.uploaded_at.strftime('%Y-%m-%d %H:%M') }} UTC</td>
+                    <td>
+                        <span class="badge {% if res.score >= 80 %}bg-success{% elif res.score >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
+                            {{ res.score | int }}/100
+                        </span>
+                    </td>
+                    <td class="small">{{ res.detected_skills.split(',') | length if res.detected_skills else 0 }} skills</td>
+                    <td>
+                        {% if res.s3_key %}
+                            <span class="badge bg-info-subtle text-info"><i class="fa-brands fa-aws"></i> AWS S3</span>
+                        {% else %}
+                            <span class="badge bg-light text-muted"><i class="fa-solid fa-server"></i> Local</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<!-- Highlight Banner -->
+<div class="card card-premium p-5 border-0 shadow-lg text-white mb-5 position-relative" style="background: var(--primary-gradient);">
+    <div class="row align-items-center position-relative z-1">
+        <div class="col-lg-8">
+            <span class="badge bg-white text-primary fw-bold badge-custom px-3 py-2 mb-3">System Overview</span>
+            <h2 class="fw-bold mb-3">Modular AI placement assistant platform</h2>
+            <p class="text-white-50 fs-5 mb-4">Leveraging modern Natural Language Processing (NLP) tokenizers to isolate tech stacks, detect key skills, recommend curriculum modules, and simulate placement scores with full AWS & Docker deployment capabilities.</p>
+            <div class="d-flex gap-3 flex-wrap">
+                <span class="d-inline-flex align-items-center gap-2 text-white small"><i class="fa-solid fa-circle-check"></i> Modular MVC Architecture</span>
+                <span class="d-inline-flex align-items-center gap-2 text-white small"><i class="fa-solid fa-circle-check"></i> SQLite & SQLAlchemy ORM</span>
+                <span class="d-inline-flex align-items-center gap-2 text-white small"><i class="fa-solid fa-circle-check"></i> Dockerized Deployments</span>
+            </div>
+        </div>
+        <div class="col-lg-4 text-center d-none d-lg-block">
+            <i class="fa-solid fa-brain" style="font-size: 140px; opacity: 0.15; transform: rotate(15deg);"></i>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if current_user.is_authenticated and metrics.has_resume %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Chart 1: Preparation Sub-scores
+        const scoresCtx = document.getElementById('scoresChart').getContext('2d');
+        new Chart(scoresCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Resume Score', 'Aptitude Score', 'Interview Score'],
+                datasets: [{
+                    label: 'Score (out of 100)',
+                    data: [{{ metrics.readiness_resume }}, {{ metrics.readiness_aptitude }}, {{ metrics.readiness_interview }}],
+                    backgroundColor: ['#4f46e5', '#3b82f6', '#10b981'],
+                    borderRadius: 6,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: '#f1f5f9' },
+                        ticks: { font: { family: 'Inter' } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { family: 'Inter' } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Chart 2: Skills Ratio
+        const skillsCtx = document.getElementById('skillsRatioChart').getContext('2d');
+        new Chart(skillsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Detected Stacks', 'Missing Stacks'],
+                datasets: [{
+                    data: [{{ metrics.detected_skills_count }}, {{ metrics.missing_skills_count }}],
+                    backgroundColor: ['#10b981', '#cbd5e1'],
+                    borderWidth: 2,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: { family: 'Inter', size: 12 }
+                        }
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}
