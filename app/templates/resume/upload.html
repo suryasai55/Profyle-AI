@@ -1,28 +1,193 @@
 {% extends "base.html" %}
-{% block title %}Upload Resume | PlacementReady AI{% endblock %}
+{% block title %}Resume Builder | CareerAI{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card card-premium p-5 border-0 shadow-lg text-center">
-                <h2 class="fw-bold mb-2">Analyze Your Resume</h2>
-                <p class="text-muted mb-5">Upload your PDF resume to parse technical skills, scan gaps, and compute your baseline score.</p>
-                
-                <form action="{{ url_for('resume.upload') }}" method="POST" enctype="multipart/form-data">
-                    <div class="border border-2 border-dashed border-primary rounded-lg p-5 mb-4 bg-light position-relative" style="border-style: dashed !important; border-radius: var(--border-radius-lg)">
-                        <i class="fa-solid fa-cloud-arrow-up text-primary mb-3" style="font-size: 3rem;"></i>
-                        <h5>Drag & drop your resume file here</h5>
-                        <p class="text-muted small">Only PDF files are supported. Max size 16MB.</p>
-                        <input type="file" name="resume" class="form-control mt-4 form-control-premium w-50 mx-auto" accept=".pdf" required>
+<!-- Page Header -->
+<div class="row align-items-center mb-4 py-2">
+    <div class="col-md-8">
+        <h2 class="fw-bold text-white mb-1">Resume Builder</h2>
+        <p class="text-muted small mb-0">Upload your current resume. Our AI will analyze your experience, skills, and industry alignment to provide optimization suggestions.</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <button class="btn btn-premium-outline btn-sm py-1.5 px-3 d-inline-flex align-items-center" onclick="location.href='{{ url_for('dashboard.index') }}'">
+            <i class="fa-solid fa-clock-rotate-left me-1.5"></i> View History
+        </button>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Left Column: Upload Form & ATS Info -->
+    <div class="col-lg-8">
+        <!-- Main Upload Card -->
+        <div class="card card-premium p-4 mb-4">
+            <form action="{{ url_for('resume.upload') }}" method="POST" enctype="multipart/form-data">
+                <!-- Dropzone Area -->
+                <div class="upload-dropzone mb-4" id="dropzone" onclick="document.getElementById('resumeFile').click()">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center bg-primary-subtle text-primary mb-3 mx-auto" style="width: 54px; height: 54px;">
+                        <i class="fa-solid fa-file-arrow-up fs-3"></i>
                     </div>
+                    <h5 class="fw-bold mb-1 text-dark">Drag & Drop Resume</h5>
+                    <p class="text-muted small mb-3">or <span class="text-primary fw-semibold text-decoration-underline" style="cursor: pointer;">browse files</span> from your computer</p>
                     
-                    <button type="submit" class="btn btn-premium btn-lg px-5">
-                        <i class="fa-solid fa-microscope me-2"></i> Start NLP Parsing
-                    </button>
-                </form>
+                    <!-- File input hidden -->
+                    <input type="file" name="resume" id="resumeFile" accept=".pdf" style="display: none;" onchange="fileSelected(this)">
+                    
+                    <!-- Selected File Info -->
+                    <div id="fileInfo" class="mb-3 d-none">
+                        <span class="badge bg-success-subtle text-success p-2" style="font-size: 0.8rem;">
+                            <i class="fa-solid fa-file-pdf me-1"></i> <span id="fileName">No file selected</span>
+                        </span>
+                    </div>
+
+                    <!-- Limits list -->
+                    <div class="d-flex justify-content-center gap-3 text-muted" style="font-size: 0.725rem;">
+                        <span><i class="fa-solid fa-circle-check text-primary me-1"></i> ONLY PDF</span>
+                        <span><i class="fa-solid fa-circle-check text-primary me-1"></i> MAX SIZE 5MB</span>
+                    </div>
+                </div>
+                
+                <!-- Action Button -->
+                <button type="submit" id="processBtn" class="btn btn-premium w-100 py-2.5 d-flex align-items-center justify-content-center gap-1.5" style="background-color: #cbd5e1; box-shadow: none; pointer-events: none;" disabled>
+                    Process Resume <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+        
+        <!-- Optimize for ATS Card -->
+        <div class="border border-0 border-start border-3 rounded p-4 d-flex gap-3 align-items-start" style="background-color: #fffaf0; border-color: #f9b115 !important;">
+            <div class="rounded d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background-color: #fef3c7; color: #d97706; flex-shrink: 0;">
+                <i class="fa-solid fa-lightbulb fs-5"></i>
+            </div>
+            <div>
+                <h6 class="fw-bold text-dark mb-1">Optimize for ATS</h6>
+                <p class="text-muted mb-0 small" style="line-height: 1.5;">
+                    Our AI uses standard Applicant Tracking System (ATS) protocols. For the best analysis, avoid complex graphics or multi-column layouts that may hinder parsing accuracy.
+                </p>
             </div>
         </div>
     </div>
+    
+    <!-- Right Column: Recent Scans -->
+    <div class="col-lg-4">
+        <!-- Recent Analysis List -->
+        <div class="card card-premium p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0">Recent Analysis</h5>
+                <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-1" style="font-size: 0.65rem;">
+                    {{ [1, 2, 3] | length if not recent_resumes else recent_resumes | length }} Total
+                </span>
+            </div>
+            
+            <div class="d-flex flex-column gap-3.5 mb-4">
+                {% if recent_resumes %}
+                    {% for res in recent_resumes %}
+                        <div class="pb-3 {% if not loop.last %}border-bottom border-light-subtle{% endif %}">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <div class="rounded d-flex align-items-center justify-content-center bg-primary-subtle text-primary" style="width: 32px; height: 32px; flex-shrink: 0;">
+                                    <i class="fa-solid fa-file-pdf" style="font-size: 0.95rem;"></i>
+                                </div>
+                                <div class="text-truncate">
+                                    <span class="fw-semibold text-dark d-block small text-truncate" style="max-width: 180px;">{{ res.filename }}</span>
+                                    <span class="text-muted" style="font-size: 0.65rem;">{{ res.uploaded_at.strftime('%b %d, %Y') }}</span>
+                                </div>
+                            </div>
+                            <!-- Show Score -->
+                            <div class="d-flex align-items-center gap-2 mt-1">
+                                <span class="badge bg-success-subtle text-success" style="font-size: 0.65rem; font-weight: 700;">{{ res.score | int }}% Match</span>
+                                <span class="text-muted small" style="font-size: 0.65rem;">for career stack</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Mock Items matching mockup -->
+                    <div class="pb-3 border-bottom border-light-subtle">
+                        <div class="d-flex align-items-center gap-2 mb-1.5">
+                            <div class="rounded d-flex align-items-center justify-content-center bg-primary-subtle text-primary" style="width: 32px; height: 32px; flex-shrink: 0;">
+                                <i class="fa-solid fa-file-pdf" style="font-size: 0.95rem;"></i>
+                            </div>
+                            <div>
+                                <span class="fw-semibold text-dark d-block small">Product_Designer_v2.pdf</span>
+                                <span class="text-muted" style="font-size: 0.65rem;">Oct 12, 2026</span>
+                            </div>
+                        </div>
+                        <div class="progress" style="height: 4px; border-radius: 2px;">
+                            <div class="progress-bar" style="width: 85%; background-color: #0047ff;"></div>
+                        </div>
+                    </div>
+                    <div class="pb-3 border-bottom border-light-subtle">
+                        <div class="d-flex align-items-center gap-2 mb-1.5">
+                            <div class="rounded d-flex align-items-center justify-content-center bg-primary-subtle text-primary" style="width: 32px; height: 32px; flex-shrink: 0;">
+                                <i class="fa-solid fa-file-pdf" style="font-size: 0.95rem;"></i>
+                            </div>
+                            <div>
+                                <span class="fw-semibold text-dark d-block small">UX_Researcher_v1.pdf</span>
+                                <span class="text-muted" style="font-size: 0.65rem;">Oct 10, 2026</span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mt-1">
+                            <span class="badge bg-success-subtle text-success" style="font-size: 0.65rem; font-weight: 700;">84% Match</span>
+                            <span class="text-muted small" style="font-size: 0.65rem;">for UX Role</span>
+                        </div>
+                    </div>
+                    <div class="pb-2">
+                        <div class="d-flex align-items-center gap-2 mb-1.5">
+                            <div class="rounded d-flex align-items-center justify-content-center bg-primary-subtle text-primary" style="width: 32px; height: 32px; flex-shrink: 0;">
+                                <i class="fa-solid fa-file-pdf" style="font-size: 0.95rem;"></i>
+                            </div>
+                            <div>
+                                <span class="fw-semibold text-dark d-block small">General_Resume_Elena.pdf</span>
+                                <span class="text-muted" style="font-size: 0.65rem;">Oct 05, 2026</span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mt-1">
+                            <span class="badge" style="font-size: 0.65rem; background-color: #eff6ff; color: #0047ff; font-weight: 700;">92% Match</span>
+                            <span class="text-muted small" style="font-size: 0.65rem;">for Creative Director</span>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <a href="{{ url_for('dashboard.index') }}" class="text-primary fw-semibold small text-decoration-none d-block text-center mt-2">View All History</a>
+        </div>
+        
+        <!-- Bottom Ad Card -->
+        <div class="card p-4 border-0 shadow-lg text-white" style="background: linear-gradient(135deg, #102e5a 0%, #151528 100%); border-radius: var(--border-radius-lg);">
+            <span class="badge bg-primary fw-bold badge-custom px-2.5 py-1 mb-2.5" style="font-size: 0.55rem; width: fit-content;">AI PRO TIP</span>
+            <h5 class="fw-bold mb-2">Improve your Match Score</h5>
+            <p class="text-white-50 mb-0" style="font-size: 0.725rem; line-height: 1.45;">
+                Users who use our "Industry Keywords" tool before uploading see an average of <strong class="text-white">15% higher matching coefficients</strong> from recruitment pipelines.
+            </p>
+        </div>
+    </div>
 </div>
+
+<script>
+    function fileSelected(input) {
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const processBtn = document.getElementById('processBtn');
+        const dropzone = document.getElementById('dropzone');
+        
+        if (input.files && input.files[0]) {
+            fileName.innerText = input.files[0].name;
+            fileInfo.classList.remove('d-none');
+            
+            // Enable submit button and style it active
+            processBtn.disabled = false;
+            processBtn.style.backgroundColor = '#0047ff';
+            processBtn.style.pointerEvents = 'auto';
+            processBtn.style.boxShadow = '0 4px 12px rgba(0, 71, 255, 0.2)';
+            
+            // Highlight dropzone border
+            dropzone.style.borderColor = '#0047ff';
+        } else {
+            fileInfo.classList.add('d-none');
+            processBtn.disabled = true;
+            processBtn.style.backgroundColor = '#cbd5e1';
+            processBtn.style.pointerEvents = 'none';
+            processBtn.style.boxShadow = 'none';
+            dropzone.style.borderColor = 'rgba(255, 255, 255, 0.35)';
+        }
+    }
+</script>
 {% endblock %}

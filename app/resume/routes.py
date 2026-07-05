@@ -102,7 +102,11 @@ def upload():
             flash('Invalid file type. Only PDF files are allowed.', 'danger')
             return redirect(request.url)
 
-    return render_template('resume/upload.html')
+    recent_resumes = []
+    if current_user.is_authenticated:
+        recent_resumes = Resume.query.filter_by(user_id=current_user.id).order_by(Resume.uploaded_at.desc()).limit(5).all()
+
+    return render_template('resume/upload.html', recent_resumes=recent_resumes)
 
 @resume.route('/results/<int:resume_id>')
 @login_required

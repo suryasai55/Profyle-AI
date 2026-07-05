@@ -21,10 +21,12 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-brand d-block py-3 px-3">
             <div class="d-flex align-items-center">
-                <i class="fa-solid fa-chart-line text-primary me-2 fs-4"></i>
-                <div class="fw-bold fs-5 text-primary" style="letter-spacing: -0.03em; line-height: 1.1;">CareerEdge</div>
+                <div class="rounded d-flex align-items-center justify-content-center bg-primary text-white me-2.5" style="width: 32px; height: 32px;">
+                    <i class="fa-solid fa-bolt-lightning" style="font-size: 1.05rem;"></i>
+                </div>
+                <div class="fw-bold fs-5 text-primary" style="letter-spacing: -0.03em; line-height: 1.1;">CareerAI</div>
             </div>
-            <div class="text-muted" style="font-size: 0.65rem; margin-top: 1px; font-weight: 600; padding-left: 28px;">AI Assistant</div>
+            <div class="text-muted" style="font-size: 0.65rem; margin-top: 1px; font-weight: 600; padding-left: 42px;">Student Pro</div>
         </div>
         
         <div class="sidebar-nav">
@@ -50,15 +52,15 @@
             
             <!-- Pro Upgrade Section -->
             <div class="sidebar-promo" style="margin-top: 2rem;">
-                <div class="fw-bold text-primary mb-1" style="font-size: 0.65rem; letter-spacing: 0.05em;">LIMITED OFFER</div>
-                <div class="text-dark fw-bold mb-2" style="font-size: 0.8rem;">Upgrade to Pro</div>
-                <a href="#" class="btn btn-premium w-100 py-1.5" style="font-size: 0.75rem; font-weight: 700;">Go Premium</a>
+                <div class="fw-bold text-primary mb-1" style="font-size: 0.65rem; letter-spacing: 0.05em;">PRO FEATURE</div>
+                <div class="text-dark fw-bold mb-2" style="font-size: 0.8rem;">Upgrade to Premium</div>
+                <a href="#" class="btn btn-premium w-100 py-1.5" style="font-size: 0.75rem; font-weight: 700;">Get Access</a>
             </div>
             
             <div class="mt-4 pt-2 border-top border-light-subtle">
-                <a href="#" class="nav-link py-1.5" style="font-size: 0.8rem; color: #64748b;"><i class="fa-solid fa-circle-question me-2"></i> Help Center</a>
+                <a href="#" class="nav-link py-1.5" style="font-size: 0.8rem; color: #64748b;"><i class="fa-solid fa-gear me-2"></i> Settings</a>
                 {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('auth.logout') }}" class="nav-link py-1.5 text-danger" style="font-size: 0.8rem;"><i class="fa-solid fa-right-from-bracket me-2"></i> Sign Out</a>
+                    <a href="{{ url_for('auth.logout') }}" class="nav-link py-1.5 text-danger" style="font-size: 0.8rem;"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
                 {% endif %}
             </div>
         </div>
