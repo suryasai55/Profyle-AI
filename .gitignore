@@ -1,36 +1,32 @@
-# Python cache
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
 *.pyd
-.ipynb_checkpoints
 
 # Virtual Environment
 venv/
-ENV/
-env/
 .env
-.venv
+
+# Logs
+*.log
 
 # Database
 *.db
-*.sqlite3
 
-# Uploads and logs
-uploads/
-app.log
-nltk_data/
+# Uploads
+uploads/*
+!uploads/.gitkeep
 
-# IDE files
+# VS Code
 .vscode/
-.idea/
-.project
-.pydevproject
 
-# OS files
-Thumbs.db
-Desktop.ini
+# OS Files
 .DS_Store
+Thumbs.db
 
-# Temporary scratchpad scripts
-scratch/
+# Pytest
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
