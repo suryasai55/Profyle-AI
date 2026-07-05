@@ -95,3 +95,85 @@ def score():
         readiness=user_readiness,
         suggestions=suggestions
     )
+
+@readiness.route('/jobs', methods=['GET'])
+@login_required
+def jobs():
+    """Render job matches based on the candidate's skills alignment."""
+    from app.models.resume import Resume
+    latest_resume = Resume.query.filter_by(user_id=current_user.id).order_by(Resume.uploaded_at.desc()).first()
+    
+    # Determine detected skills
+    detected_skills = []
+    if latest_resume and latest_resume.detected_skills:
+        detected_skills = [s.strip().lower() for s in latest_resume.detected_skills.split(',') if s.strip()]
+        
+    # Compile list of jobs
+    jobs_list = [
+        {
+            "id": 1,
+            "title": "Junior Python Developer",
+            "company": "TechCorp Solutions",
+            "location": "San Francisco, CA (Hybrid)",
+            "role": "Python Developer",
+            "required_skills": ["python", "sql", "git", "flask"],
+            "salary": "$85,000 - $105,000"
+        },
+        {
+            "id": 2,
+            "title": "Data Analyst (Analytics Team)",
+            "company": "DataFlo Inc.",
+            "location": "New York, NY (Remote)",
+            "role": "Data Analyst",
+            "required_skills": ["sql", "python", "data science"],
+            "salary": "$90,000 - $110,000"
+        },
+        {
+            "id": 3,
+            "title": "Machine Learning Engineer",
+            "company": "NeuraLink Systems",
+            "location": "Boston, MA (On-site)",
+            "role": "ML Engineer",
+            "required_skills": ["python", "machine learning", "data science", "nlp"],
+            "salary": "$120,000 - $145,000"
+        },
+        {
+            "id": 4,
+            "title": "Junior DevOps Engineer",
+            "company": "CloudOps & Co.",
+            "location": "Austin, TX (Remote)",
+            "role": "DevOps Engineer",
+            "required_skills": ["docker", "jenkins", "git", "aws", "python"],
+            "salary": "$95,000 - $115,000"
+        },
+        {
+            "id": 5,
+            "title": "Backend Systems Developer",
+            "company": "AppForge Studio",
+            "location": "Seattle, WA (Hybrid)",
+            "role": "Backend Developer",
+            "required_skills": ["python", "sql", "flask", "docker", "aws"],
+            "salary": "$110,000 - $130,000"
+        }
+    ]
+    
+    # Calculate match score dynamically
+    for job in jobs_list:
+        matched_skills = [s for s in job["required_skills"] if s in detected_skills]
+        match_ratio = (len(matched_skills) / len(job["required_skills"])) * 100 if job["required_skills"] else 100
+        # Add basic base score if they have any python skills
+        if match_ratio == 0:
+            if "python" in detected_skills:
+                match_ratio = 45
+            elif "sql" in detected_skills:
+                match_ratio = 30
+            else:
+                match_ratio = 15
+        job["match_score"] = min(100, int(match_ratio))
+        job["matched_skills"] = [s.capitalize() for s in matched_skills]
+        job["missing_skills"] = [s.capitalize() for s in job["required_skills"] if s not in detected_skills]
+        
+    # Sort jobs by match score descending
+    jobs_list.sort(key=lambda x: x["match_score"], reverse=True)
+    
+    return render_template('readiness/jobs.html', jobs=jobs_list)

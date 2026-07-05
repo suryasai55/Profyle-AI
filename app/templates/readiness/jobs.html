@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Job Board | CareerAI{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="row align-items-center mb-4 py-2">
+    <div class="col-md-8">
+        <h2 class="fw-bold text-white mb-1">Job Matches</h2>
+        <p class="text-muted small mb-0">Open positions automatically matched to your identified technical skills and baseline profile metrics.</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <button class="btn btn-premium-outline btn-sm py-1.5 px-3 d-inline-flex align-items-center" onclick="location.href='{{ url_for('dashboard.index') }}'">
+            <i class="fa-solid fa-arrow-left me-1.5"></i> Back to Dashboard
+        </button>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Main Jobs Listings -->
+    <div class="col-lg-8">
+        <div class="d-flex flex-column gap-3">
+            {% if jobs %}
+                {% for job in jobs %}
+                    <div class="card card-premium p-4 d-flex flex-row justify-content-between align-items-center gap-3">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center bg-primary-subtle text-primary" style="width: 48px; height: 48px; flex-shrink: 0; margin-top: 2px;">
+                                <i class="fa-solid fa-briefcase fs-5"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold text-dark mb-1">{{ job.title }}</h5>
+                                <p class="text-muted small mb-2">
+                                    <strong class="text-dark">{{ job.company }}</strong> &middot; {{ job.location }} &middot; <span class="text-success fw-semibold">{{ job.salary }}</span>
+                                </p>
+                                
+                                <!-- Skills matching tags -->
+                                <div class="d-flex flex-wrap gap-1.5 align-items-center">
+                                    <span class="text-muted small fw-bold me-1" style="font-size: 0.65rem;">REQUIRED:</span>
+                                    {% for skill in job.matched_skills %}
+                                        <span class="badge bg-success-subtle text-success" style="font-size: 0.65rem; padding: 0.25em 0.6em; border-radius: 4px;">
+                                            <i class="fa-solid fa-circle-check me-0.5"></i> {{ skill }}
+                                        </span>
+                                    {% endfor %}
+                                    {% for skill in job.missing_skills %}
+                                        <span class="badge bg-warning-subtle text-warning" style="font-size: 0.65rem; padding: 0.25em 0.6em; border-radius: 4px;">
+                                            <i class="fa-solid fa-triangle-exclamation me-0.5"></i> {{ skill }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Score circle and apply btn -->
+                        <div class="text-end d-flex flex-column align-items-end gap-2.5" style="min-width: 100px;">
+                            <div style="width: 44px; height: 44px;">
+                                <svg viewBox="0 0 36 36" style="width: 100%; height: 100%;">
+                                    <path stroke="#f1f5f9" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                    <path stroke="#{% if job.match_score >= 80 %}34c759{% elif job.match_score >= 50 %}ff9500{% else %}ff3b30{% endif %}" stroke-width="3" stroke-dasharray="{{ job.match_score }}, 100" stroke-linecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                    <text x="18" y="21" font-family="Outfit" font-size="8.5" font-weight="800" text-anchor="middle" fill="#0f172a">{{ job.match_score }}%</text>
+                                </svg>
+                            </div>
+                            <button class="btn btn-premium btn-sm py-1.5 px-3" style="font-size: 0.725rem; font-weight: 700;" onclick="alert('Application submitted successfully to {{ job.company }}!')">Apply Now</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="card card-premium p-5 text-center">
+                    <i class="fa-solid fa-triangle-exclamation text-warning mb-3 fs-1"></i>
+                    <h5 class="fw-bold mb-1">No job matches found</h5>
+                    <p class="text-muted small">Please verify that you have uploaded a PDF resume to index your skills.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Right Sidebar Tip Cards -->
+    <div class="col-lg-4">
+        <!-- Advisory panel -->
+        <div class="card card-premium p-4 mb-4">
+            <h5 class="fw-bold mb-2">Automated Matcher</h5>
+            <p class="text-muted small mb-3" style="line-height: 1.45;">
+                We monitor job boards globally. When you close skill gaps, we dynamically update matching percentages across target pipelines.
+            </p>
+            <div class="rounded border p-3 bg-light-subtle mb-3">
+                <div class="fw-bold text-dark mb-1" style="font-size: 0.75rem;"><i class="fa-solid fa-bolt-lightning text-primary me-1.5"></i> Skills Gap Alert</div>
+                <p class="text-muted mb-0" style="font-size: 0.725rem; line-height: 1.45;">
+                    Closing gaps inside the Career Path tab directly shifts your matched roles score.
+                </p>
+            </div>
+            <a href="{{ url_for('skill_gap.analysis') }}" class="text-primary fw-semibold small text-decoration-none d-inline-flex align-items-center">
+                Close Skill Gaps <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+        
+        <!-- Ad Card -->
+        <div class="card p-4 border-0 shadow-lg text-white" style="background: linear-gradient(135deg, #102e5a 0%, #151528 100%); border-radius: var(--border-radius-lg);">
+            <h5 class="fw-bold mb-2">Recruiter Pipelines</h5>
+            <p class="text-white-50 mb-0" style="font-size: 0.725rem; line-height: 1.45;">
+                Recruiters search profiles by core tech stack weights. Profiles displaying 100% matched keys receive 5x more interview invitations.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
