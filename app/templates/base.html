@@ -19,47 +19,48 @@
 
     <!-- Sidebar Navigation -->
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-            <i class="fa-solid fa-graduation-cap"></i>
-            <span>PlacementReady</span>
+        <div class="sidebar-brand d-block py-3 px-3">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-chart-line text-primary me-2 fs-4"></i>
+                <div class="fw-bold fs-5 text-primary" style="letter-spacing: -0.03em; line-height: 1.1;">CareerEdge</div>
+            </div>
+            <div class="text-muted" style="font-size: 0.65rem; margin-top: 1px; font-weight: 600; padding-left: 28px;">AI Assistant</div>
         </div>
         
         <div class="sidebar-nav">
-            <div class="nav-category">Main</div>
             <a href="{{ url_for('dashboard.index') }}" class="nav-link {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
-                <i class="fa-solid fa-chart-line"></i> Dashboard
+                <i class="fa-solid fa-grid-2"></i> <i class="fa-solid fa-chart-simple me-2"></i> Dashboard
             </a>
             
-            <div class="nav-category">Evaluation</div>
-            <a href="{{ url_for('resume.upload') }}" class="nav-link {% if request.endpoint == 'resume.upload' %}active{% endif %}">
-                <i class="fa-solid fa-file-pdf"></i> Resume Analyzer
-            </a>
             <a href="{{ url_for('skill_gap.analysis') }}" class="nav-link {% if request.endpoint == 'skill_gap.analysis' %}active{% endif %}">
-                <i class="fa-solid fa-arrows-split-up-and-left"></i> Skill Gap Detector
-            </a>
-            <a href="{{ url_for('readiness.score') }}" class="nav-link {% if request.endpoint == 'readiness.score' %}active{% endif %}">
-                <i class="fa-solid fa-gauge-high"></i> Placement Score
+                <i class="fa-solid fa-route me-2"></i> Career Path
             </a>
             
-            <div class="nav-category">Preparation</div>
+            <a href="{{ url_for('resume.upload') }}" class="nav-link {% if request.endpoint == 'resume.upload' or request.endpoint == 'resume.results' %}active{% endif %}">
+                <i class="fa-solid fa-file-invoice me-2"></i> Resume Builder
+            </a>
+            
             <a href="{{ url_for('interview.prep') }}" class="nav-link {% if request.endpoint == 'interview.prep' %}active{% endif %}">
-                <i class="fa-solid fa-comments"></i> Interview Prep
+                <i class="fa-solid fa-user-tie me-2"></i> Mock Interviews
             </a>
             
-            <div class="nav-category">Account</div>
-            {% if current_user.is_authenticated %}
-                <span class="nav-link text-white-50"><i class="fa-solid fa-user"></i> {{ current_user.name }}</span>
-                <a href="{{ url_for('auth.logout') }}" class="nav-link">
-                    <i class="fa-solid fa-right-from-bracket"></i> Logout
-                </a>
-            {% else %}
-                <a href="{{ url_for('auth.login') }}" class="nav-link {% if request.endpoint == 'auth.login' %}active{% endif %}">
-                    <i class="fa-solid fa-right-to-bracket"></i> Login
-                </a>
-                <a href="{{ url_for('auth.register') }}" class="nav-link {% if request.endpoint == 'auth.register' %}active{% endif %}">
-                    <i class="fa-solid fa-user-plus"></i> Register
-                </a>
-            {% endif %}
+            <a href="{{ url_for('readiness.score') }}" class="nav-link {% if request.endpoint == 'readiness.score' %}active{% endif %}">
+                <i class="fa-solid fa-briefcase me-2"></i> Job Board
+            </a>
+            
+            <!-- Pro Upgrade Section -->
+            <div class="sidebar-promo" style="margin-top: 2rem;">
+                <div class="fw-bold text-primary mb-1" style="font-size: 0.65rem; letter-spacing: 0.05em;">LIMITED OFFER</div>
+                <div class="text-dark fw-bold mb-2" style="font-size: 0.8rem;">Upgrade to Pro</div>
+                <a href="#" class="btn btn-premium w-100 py-1.5" style="font-size: 0.75rem; font-weight: 700;">Go Premium</a>
+            </div>
+            
+            <div class="mt-4 pt-2 border-top border-light-subtle">
+                <a href="#" class="nav-link py-1.5" style="font-size: 0.8rem; color: #64748b;"><i class="fa-solid fa-circle-question me-2"></i> Help Center</a>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.logout') }}" class="nav-link py-1.5 text-danger" style="font-size: 0.8rem;"><i class="fa-solid fa-right-from-bracket me-2"></i> Sign Out</a>
+                {% endif %}
+            </div>
         </div>
     </div>
 
