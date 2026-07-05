@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Cloud-Based AI Career Assistant Platform
 
 An intelligent, cloud-compatible Flask web application designed to help candidate job applicants evaluate their placement readiness through NLP-driven resume parsing, target skill gap analysis, customized learning recommendations, and interactive topic-based mock interview preparation.
@@ -117,3 +118,6 @@ Individual feature check scripts are located in the project root:
 ## 📄 Documentation Links
 *   Refer to [AWS_DEPLOYMENT_GUIDE.md](file:///E:/AI-Career-Assistant/AWS_DEPLOYMENT_GUIDE.md) for full cloud configuration steps (IAM, S3, EC2, Jenkins Pipelines, and CloudWatch Logs).
 *   Refer to [API_DOCUMENTATION.md](file:///E:/AI-Career-Assistant/API_DOCUMENTATION.md) for complete backend endpoint descriptions, JSON payloads, and schemas.
+=======
+# Profyle-AI
+>>>>>>> e8d3935ff3ced87bd635d70289d4f6a5074f39a0
