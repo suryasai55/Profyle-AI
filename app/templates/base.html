@@ -17,6 +17,23 @@
 </head>
 <body>
 
+    <style>
+        {% if not current_user.is_authenticated %}
+        .top-navbar, .main-wrapper {
+            margin-left: 0 !important;
+        }
+        .top-navbar {
+            background-color: #ffffff !important;
+            padding: 0 4rem !important;
+        }
+        .main-wrapper {
+            padding: 0 !important;
+            background-color: #f8fafc !important;
+        }
+        {% endif %}
+    </style>
+
+    {% if current_user.is_authenticated %}
     <!-- Sidebar Navigation -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-brand d-block py-3 px-3">
@@ -65,19 +82,29 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
     <!-- Top Navbar -->
     <nav class="top-navbar">
         <div class="d-flex align-items-center">
-            <button class="btn btn-link text-white d-lg-none me-3" id="sidebarToggle" style="padding: 0;">
-                <i class="fa-solid fa-bars fs-4"></i>
-            </button>
-            <nav aria-label="breadcrumb" class="d-none d-md-block">
-                <ol class="breadcrumb mb-0" style="background: transparent; padding: 0; font-size: 0.8rem;">
-                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none" style="color: var(--c-blue); font-weight: 500;">Home</a></li>
-                    <li class="breadcrumb-item active text-muted" aria-current="page" style="font-weight: 500;">Dashboard</li>
-                </ol>
-            </nav>
+            {% if current_user.is_authenticated %}
+                <button class="btn btn-link text-white d-lg-none me-3" id="sidebarToggle" style="padding: 0;">
+                    <i class="fa-solid fa-bars fs-4"></i>
+                </button>
+                <nav aria-label="breadcrumb" class="d-none d-md-block">
+                    <ol class="breadcrumb mb-0" style="background: transparent; padding: 0; font-size: 0.8rem;">
+                        <li class="breadcrumb-item"><a href="/" class="text-decoration-none" style="color: var(--c-blue); font-weight: 500;">Home</a></li>
+                        <li class="breadcrumb-item active text-muted" aria-current="page" style="font-weight: 500;">Dashboard</li>
+                    </ol>
+                </nav>
+            {% else %}
+                <div class="d-flex align-items-center gap-4">
+                    <a href="/" class="fw-bold fs-5 text-primary text-decoration-none me-2" style="letter-spacing: -0.03em;">CareerAI</a>
+                    <a href="#" class="text-decoration-none text-primary small fw-semibold d-none d-md-block border-bottom border-primary border-2 pb-1" style="margin-bottom: -5px;">Platform</a>
+                    <a href="#" class="text-decoration-none text-muted small fw-semibold d-none d-md-block">Resources</a>
+                    <a href="#" class="text-decoration-none text-muted small fw-semibold d-none d-md-block">Pricing</a>
+                </div>
+            {% endif %}
         </div>
         
         <div class="d-flex align-items-center gap-3">
@@ -97,8 +124,8 @@
                     </a>
                 </div>
             {% else %}
-                <a href="{{ url_for('auth.login') }}" class="btn btn-sm btn-outline-primary fw-semibold px-3">Login</a>
-                <a href="{{ url_for('auth.register') }}" class="btn btn-sm btn-primary fw-semibold px-3">Sign Up</a>
+                <a href="{{ url_for('auth.login') }}" class="text-decoration-none text-primary small fw-semibold me-3">Login</a>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm px-3 fw-semibold">Register</a>
             {% endif %}
         </div>
     </nav>

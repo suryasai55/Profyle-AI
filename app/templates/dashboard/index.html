@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Dashboard | CareerEdge AI{% endblock %}
+{% block title %}Dashboard | CareerAI{% endblock %}
 
 {% block content %}
+{% if current_user.is_authenticated %}
 <!-- Welcome Header Banner -->
 <div class="card welcome-banner-card p-4 mb-4">
     <div class="row align-items-center">
@@ -253,9 +254,150 @@
         </table>
     </div>
 </div>
+{% else %}
+<!-- landing page content before login -->
+<div class="container py-5">
+    <div class="row align-items-center py-4 mb-5">
+        <!-- Hero Texts -->
+        <div class="col-lg-6 mb-5 mb-lg-0">
+            <span class="badge bg-primary-subtle text-primary mb-3 px-3 py-2 rounded-pill fw-bold" style="font-size: 0.65rem; border: 1px solid rgba(0, 71, 255, 0.15);">
+                <i class="fa-solid fa-circle-check me-1"></i> NEXT-GEN PLACEMENT PREP
+            </span>
+            <h1 class="display-4 fw-extrabold text-dark mb-3" style="letter-spacing: -0.03em; line-height: 1.1;">
+                Master Your Career Path with <span class="text-primary">AI</span>
+            </h1>
+            <p class="text-muted mb-4 fs-5" style="line-height: 1.55; max-width: 520px; font-weight: 500;">
+                Accelerate your professional journey with precision-engineered resume analysis, tailored skill gap detection, and AI-powered interview coaching designed for the modern workforce.
+            </p>
+            <div class="d-flex gap-3 align-items-center mb-4">
+                <a href="{{ url_for('resume.upload') }}" class="btn btn-primary btn-lg px-4 py-2.5 fw-bold d-inline-flex align-items-center gap-2" style="border-radius: var(--border-radius-md); font-size: 0.95rem;">
+                    <i class="fa-solid fa-file-invoice"></i> Analyze Resume
+                </a>
+                <a href="{{ url_for('interview.prep') }}" class="btn btn-outline-primary btn-lg px-4 py-2.5 fw-bold d-inline-flex align-items-center gap-2" style="border-radius: var(--border-radius-md); font-size: 0.95rem; border-color: #cbd5e1; color: var(--text-main); background: transparent;">
+                    <i class="fa-solid fa-rocket"></i> Start Prep
+                </a>
+            </div>
+            
+            <!-- Social Proof -->
+            <div class="d-flex align-items-center gap-2 pt-2">
+                <div class="d-flex align-items-center">
+                    <span class="rounded-circle border border-2 border-white bg-secondary" style="width: 28px; height: 28px; margin-right: -10px;"></span>
+                    <span class="rounded-circle border border-2 border-white bg-primary text-white d-flex align-items-center justify-content-center small" style="width: 28px; height: 28px; margin-right: -10px; font-size: 10px; font-weight: 600;">E</span>
+                    <span class="rounded-circle border border-2 border-white bg-success" style="width: 28px; height: 28px;"></span>
+                </div>
+                <span class="text-muted small" style="font-size: 0.75rem;">Joined by <strong class="text-dark">12,000+</strong> graduates this month</span>
+            </div>
+        </div>
+        
+        <!-- MacBook/Dashboard Mockup Frame -->
+        <div class="col-lg-6">
+            <div class="position-relative mx-auto mt-4 mt-lg-0" style="max-width: 520px;">
+                <!-- Top-left Floating Card -->
+                <div class="card p-2.5 shadow-lg border-0 d-flex flex-row align-items-center gap-2 position-absolute" style="top: -20px; left: -20px; border-radius: 12px; z-index: 10; background: #ffffff; width: 125px;">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center bg-danger text-white" style="width: 32px; height: 32px;">
+                        <i class="fa-solid fa-brain" style="font-size: 0.85rem;"></i>
+                    </div>
+                    <div>
+                        <span class="text-muted d-block" style="font-size: 0.55rem; font-weight: 700;">AI SCORE</span>
+                        <span class="fw-bold text-primary" style="font-size: 0.85rem;">88%</span>
+                    </div>
+                </div>
+                
+                <!-- Laptop Frame Wrapper -->
+                <div class="rounded-3 shadow-lg border border-3 border-dark overflow-hidden bg-white" style="border-radius: 16px !important; border-bottom-width: 8px !important;">
+                    <!-- Mockup Dashboard UI Content -->
+                    <div class="p-3" style="background-color: #f4f6fc;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex align-items-center gap-1.5">
+                                <div class="rounded bg-primary text-white" style="width: 14px; height: 14px; font-size: 7px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-bolt"></i></div>
+                                <span class="fw-bold" style="font-size: 9px; color: var(--c-primary);">CareerAI</span>
+                            </div>
+                            <div class="text-muted" style="font-size: 7px;">Elena Rodriguez</div>
+                        </div>
+                        
+                        <div class="row g-2 mb-2">
+                            <div class="col-8">
+                                <div class="card p-2 border-0 shadow-sm bg-primary text-white" style="border-radius: 6px;">
+                                    <span class="fw-bold" style="font-size: 8px;">Welcome back, Elena!</span>
+                                    <span style="font-size: 6px; opacity: 0.8;">Your career readiness is up 12%...</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="card p-2 border-0 shadow-sm text-center bg-white" style="border-radius: 6px;">
+                                    <span class="text-muted d-block" style="font-size: 5px;">RESUME SCORE</span>
+                                    <span class="fw-bold text-primary" style="font-size: 9px;">85%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card p-2 border-0 shadow-sm mb-1 bg-white" style="border-radius: 6px;">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold" style="font-size: 7px;">Readiness Progress</span>
+                                <span class="fw-bold text-primary" style="font-size: 7px;">88%</span>
+                            </div>
+                            <div class="progress" style="height: 3px;"><div class="progress-bar" style="width: 88%; background-color: #0047ff;"></div></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bottom-right Floating Card -->
+                <div class="card p-2.5 shadow-lg border-0 position-absolute" style="bottom: -20px; right: -15px; border-radius: 12px; z-index: 10; background: #ffffff; width: 145px;">
+                    <span class="fw-bold text-dark d-block mb-1" style="font-size: 0.65rem;">Skill Gap Detected</span>
+                    <div class="progress mb-1" style="height: 4px;"><div class="progress-bar" style="width: 65%; background-color: #0047ff;"></div></div>
+                    <div class="d-flex justify-content-between text-muted" style="font-size: 0.55rem;">
+                        <span>Cloud Computing</span>
+                        <span class="fw-bold">65%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Section: Engineered for Success -->
+    <div class="text-center py-5 mt-5">
+        <h2 class="fw-bold text-dark mb-2">Engineered for Success</h2>
+        <p class="text-muted mx-auto" style="max-width: 600px; font-size: 0.9rem;">
+            Our platform uses advanced neural networks to deconstruct career data and reconstruct your professional identity for maximum impact.
+        </p>
+        
+        <div class="row g-4 mt-4 text-start justify-content-center">
+            <!-- Card 1: Skill Gap Detection -->
+            <div class="col-md-5">
+                <div class="card card-premium p-4 h-100" style="background-color: #eff6ff; border-color: rgba(0, 71, 255, 0.15);">
+                    <div class="rounded d-flex align-items-center justify-content-center bg-primary text-white mb-3" style="width: 38px; height: 38px;">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">Skill Gap Detection</h5>
+                    <p class="text-muted small mb-3" style="line-height: 1.5;">
+                        Identify exactly which certifications and technical skills are missing for your target role based on real-time market demand data.
+                    </p>
+                    <a href="{{ url_for('skill_gap.analysis') }}" class="text-primary fw-bold small text-decoration-none d-inline-flex align-items-center">
+                        Explore data sets <i class="fa-solid fa-arrow-right ms-1" style="font-size: 0.75rem;"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Card 2: Interview Readiness -->
+            <div class="col-md-5">
+                <div class="card card-premium p-4 h-100">
+                    <div class="rounded d-flex align-items-center justify-content-center bg-light text-primary mb-3" style="width: 38px; height: 38px; border: 1px solid var(--border-color)">
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">Interview Readiness</h5>
+                    <p class="text-muted small mb-3" style="line-height: 1.5;">
+                        Simulate high-pressure technical and behavioral interviews with an AI coach that provides instantaneous sentiment and tonal feedback.
+                    </p>
+                    <span class="text-muted small fw-bold">Telemetry Enabled</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
+{% if current_user.is_authenticated %}
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -280,7 +422,7 @@
                     backgroundColor: gradient,
                     fill: true,
                     tension: 0.45,
-                    pointRadius: [0, 0, 0, 4, 0, 0], // Highlight single point in Apr (index 3)
+                    pointRadius: [0, 0, 0, 4, 0, 0], // Highlight single point in Apr
                     pointBackgroundColor: '#0047ff',
                     pointBorderColor: '#ffffff',
                     pointBorderWidth: 2,
@@ -309,4 +451,5 @@
         });
     });
 </script>
+{% endif %}
 {% endblock %}
